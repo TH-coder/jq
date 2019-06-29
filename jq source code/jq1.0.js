@@ -75,18 +75,80 @@
         var length = arguments.length
         //这里的i用的好像很巧妙又很奇怪
         var i = 1
+        //默认是浅拷贝,深浅拷贝标识
+        var deep = false
+        //option用于存放arguments下标从1开始往后的所有元素,key用于存放该元素遍历的属性,
+        //这里可能是因为是es5的问题,如果直接在for循环或者if里面申明,也一样会放到外部作用域,所以直接就在这里申明了
+        var option, key, copy, src, copyIsArray, clone
+        //如果第一个为布尔值,说明用户要选择深浅拷贝
+        if (typeof target === 'boolean') {
+            deep = target
+            //那么target就往后挪了一个位置,所以是arguments[1]
+            target = arguments[1]
+            //那么同时,这里的i也要从下标2开始了
+            i = 2
+        }
         //判断target是否为一个object
         if (typeof target !== 'object') {
             target = {}
         }
         //等于i说明是扩展方法
         if (length === i) {
+            //然后把target 设置为this i-- ,就可以复用下面的代码了
+            //这里好像确实挺巧妙的,虽然要处理好几种情况,但是都是只改变了target和this就实现了
             target = this
+            i--
         }
+        //对应的是$.extend({},{age:12})
+        //这里的i从1开始的,给参数附加属性
+        for (; i < length; i++) {
+            option = arguments[i]
+            for (key in option) {
+                if (option.hasOwnProperty(key)) {
+                    //copy 为要借鉴的对象上的属性值
+                    copy = option[key]
+                    //src 为目标对象上的属性值,如果src没有的,说明没涉及到属性重复的问题
+                    src = target[key]
+                    //如果deep为true说明深拷贝,否则直接按照原来浅拷贝的走
+                    //同时判断借鉴对象上的属性值是否为对象或数组,否则就不需要走深拷贝,直接赋值就行了
+                    if (deep && (jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)))) {
+                        if (copyIsArray) {
+                            //重置判断的值
+                            copyIsArray = false
+                            //判断src是否已经有值了,如果没有就新建一个数组
+                            clone = src && jQuery.isArray(src) ? src : []
+                        } else {
+                            //判断src是否已经有值了,如果没有就新建一个对象
+                            clone = src && jQuery.isPlainObject(src) ? src : {}
+                        }
+                        target[key] = jQuery.extend(deep, clone, copy)
+                    } else if (copy !== undefined) {
+
+                        target[key] = copy
+                    }
+                }
+            }
+        }
+        return target
     }
+
+
 
     //这样init出来的实例就可以共享到和jQuery原型的属性
     jQuery.fn.init.prototype = jQuery.fn
+
+    jQuery.extend({
+        isPlainObject: function (obj) {
+            return toString.call(obj) === '[object Object]'
+        },
+        isArray: function (obj) {
+            return toString.call(obj) === '[object Array]'
+        }
+    })
+
+    // console.log(jQuery);
+
+
     root.$ = root.jQuery = jQuery
 
     // extend
