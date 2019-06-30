@@ -49,6 +49,7 @@ var
 	core_version = "2.0.3",
 
 	// Save a reference to some core methods
+	
 	core_concat = core_deletedIds.concat,
 	core_push = core_deletedIds.push,
 	core_slice = core_deletedIds.slice,
@@ -92,6 +93,8 @@ var
 		window.removeEventListener( "load", completed, false );
 		jQuery.ready();
 	};
+
+
 
 jQuery.fn = jQuery.prototype = {
 	// The current version of jQuery being used
