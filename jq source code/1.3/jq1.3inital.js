@@ -1,4 +1,9 @@
-
+/*
+ * @Author: Administrator
+ * @Date:   2018-10-30 20:40:51
+ * @Last Modified by:   Administrator
+ * @Last Modified time: 2018-11-01 22:10:22
+ */
 (function(root) {
 	var testExp = /^\s*(<[\w\W]+>)[^>]*$/;
 	var rejectExp = /^<(\w+)\s*\/?>(?:<\/\1>|)$/;   
@@ -156,7 +161,19 @@
 			var parse = rejectExp.exec(data);
 			console.log(parse)
 			return [context.createElement(parse[1])];   
-		},
+        },
+        
+        //延迟对象 有点像promise
+        Deferred: function (params) {
+            var obj = {}
+            obj.resolve = function (params) {
+                
+            }
+        },
+
+        When: function (params) {
+            
+        }
 	});
 
 	root.$ = root.jQuery = jQuery;
