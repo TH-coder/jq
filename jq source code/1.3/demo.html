@@ -5,30 +5,30 @@
 		<title></title>
 	</head>
 	<body>
-		<script src="../jquery.js"></script>
+		<!-- <script src="../jquery.js"></script> -->
 		<!-- <script src="jq1.3.js"></script> -->
 		<script>
-			var wait = function() {
-				var der = $.Deferred();     //延迟对象    deferred 
-				var test = function() {
-                    console.log("老司机开车了");
-                    setTimeout(() => {
-					   der.resolve("max");     //成功     队列中的处理函数  调用成功这个队列中的处理函数
-                    }, 1000);
-				}
-				setTimeout(test, 1000);   
-				return der;    //延迟对象 
-			}
+			// var wait = function() {
+			// 	var der = $.Deferred();     //延迟对象    deferred 
+			// 	var test = function() {
+            //         console.log("老司机开车了");
+            //         setTimeout(() => {
+			// 		   der.resolve("max");     //成功     队列中的处理函数  调用成功这个队列中的处理函数
+            //         }, 1000);
+			// 	}
+			// 	setTimeout(test, 1000);   
+			// 	return der;    //延迟对象 
+			// }
             
-			//延迟对象的状态 决定调用那个队列中的处理函数
-			$.when(wait())     //promise对象promise.done()   self.add
-				.done(function(name) {
-					console.log(name)
-					console.log("执行成功");
-				})
-				.fail(function() {
-					console.log("执行失败");
-				});
+			// //延迟对象的状态 决定调用那个队列中的处理函数
+			// $.when(wait())     //promise对象promise.done()   self.add
+			// 	.done(function(name) {
+			// 		console.log(name)
+			// 		console.log("执行成功");
+			// 	})
+			// 	.fail(function() {
+			// 		console.log("执行失败");
+			// 	});
 				
 				
 				/*
@@ -41,6 +41,16 @@
 				
 				
 				*/
+				function log() {
+					console.log(myValue);
+				}
+
+				function fn() {
+					const myValue = 'hello world'
+					log()
+				}
+
+				fn()
 		</script>
 	</body>
 </html>

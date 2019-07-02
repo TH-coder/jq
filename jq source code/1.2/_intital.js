@@ -1,68 +1,59 @@
 (function (root) {
-    function flatConcat(arr) {
-        var newArr = []
-        for (var index = 0; index < arr.length; index++) {
-            var element = arr[index];
-            if (isFunction(element)) {
-                newArr.push(element)
-
-            } else if (isArray(element)) {
-                newArr = newArr.concat(flatConcat(element))
+    var _ = {
+        Callbacks: function (params) {
+            var option = {}, run = false, starts, start = 0;
+            if (typeof params === 'string') {
+                var stateList = params.split(/\s+/)
+                stateList.forEach(state => {
+                    option[state] = true
+                });
             }
-        }
-        return newArr
-    }
-
-
-    function Callbacks(state) {
-
-        var obj = {
-            once: false,
-            stopOnFalse: false,
-            menmorny: false,
-            once: false,
-        }, fnList = [], i = 0;
-
-        if (typeof state === 'string') {
-            state.split(/\s+|,/).forEach((item) => {
-                obj[item] = true
-            })
-        }
-
-        obj.add = function () {
-            fnList = fnList.concat(flatConcat(arguments))
-        }
-        obj.fire = function () {
-            for (var i = 0; i < fnList.length; i++) {
-                var fn = fnList[i]
-                // if (state === 'unique') {
-                //     for (let k = fnList.length - 1; k >= 0; k--) {
-                //         if (fn === fnList[k] && k !== i) return
-                //     }
-                // }
-                var bool = fn()
-                if (state === 'stopOnFalse' && bool === false) {
-                    return this
+            var fnlist = []
+            function fire(data) {
+                var index = 0
+                if (option.memory) {
+                    run = true
+                    index = starts || 0
+                }
+                starts = 0
+                for (; index < fnlist.length; index++) {
+                    const fn = fnlist[index];
+                    var flag = fn.apply(data[0], data[1])
+                    if (option.stopOnFalse && !flag) {
+                        break
+                    }
+                }
+                if (option.once) {
+                    fnlist.length = 0
                 }
             }
-            if (state === 'once') {
-                fnList.length = 0
+            var obj = {
+                add: function () {
+                    start = fnlist.length
+                    var arr = Array.prototype.slice.call(arguments)
+                    arr.forEach((arg) => {
+                        if (toString.call(arg) === '[object Function]') {
+                            fnlist.push(arg)
+                        }
+                    })
+                    if (option.memory && run) {
+                        starts = start
+                        fire([this])
+                    }
+
+                },
+                fireWidth: function (context, arguments) {
+                    fire([context, arguments])
+                },
+                fire: function () {
+                    obj.fireWidth(this, arguments)
+                }
             }
-            return this
+
+
+            return obj
         }
-        return obj
     }
 
-
-    function isArray(obj) {
-        return toString.call(obj) === "[object Array]";
-    }
-
-    function isFunction(fn) {
-        return toString.call(fn) === "[object Function]";
-    }
-
-    root._ = {
-        Callbacks
-    }
+    root._ = _
 })(this)

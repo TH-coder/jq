@@ -12,11 +12,13 @@
     <div class="box"></div>
     <div class="box"></div>
     <div class="box"></div>
-    <script src="jquery.js"></script>
+    <!-- <script src="jquery.js"></script> -->
     <!-- <script src="1.1/jq.1.1.js"></script> -->
     <!-- <script src="1.1/jq1.1inital.js"></script> -->
     <!-- <script src="1.2/jq1.2inital.js"></script> -->
     <!-- <script src="1.2/_.1.js"></script> -->
+    <script src="1.2/_intital.js"></script>
+    <!-- <script src="1.2/_.js"></script> -->
     <script>
 
         // console.log($.extend({},{name:1,list:{lt:1}},{age:222,list:{l:2}})  );
@@ -36,7 +38,7 @@
 
         // cb.add(function (params) {
         //     console.log(1);
-            
+
         // })
 
         // cb.fire()
@@ -76,9 +78,36 @@
 
         // cb.fire()
 
+        const cb = _.Callbacks('memory')
 
-        console.log($('div'));
-        
+        const log1 = function (params) {
+            console.log(1, params);
+        }
+        const log2 = function (params) {
+            console.log(2, params);
+        }
+        const log3 = function (params) {
+            console.log(3, params);
+        }
+
+        cb.add(log1)
+
+        cb.add(log2)
+
+        // const cb2 = _.Callbacks('memory')
+        // console.log(cb2);
+        // cb2.add(log3)
+        // cb2.fire()
+        cb.fire()
+
+        cb.add(log2,log3)
+        cb.add(log2)
+
+        cb.fire()
+
+
+
+
     </script>
 </body>
 

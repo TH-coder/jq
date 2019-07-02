@@ -165,6 +165,7 @@
 
 		//$.Callbacks用于管理函数队列
 		callbacks: function(options) {
+			//判断一下options是否是字符串,
 			options = typeof options === "string" ? (optionsCache[options] || createOptions(options)) : {};
 			var list = [];
 			var index, length, testting, memory, start, starts;
