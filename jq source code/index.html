@@ -35,14 +35,14 @@
         // console.log([]);
         // console.log($({}));
 
-        var cb = _.Callbacks('once stopOnFalse')
+        // var cb = _.Callbacks('once stopOnFalse')
 
-        cb.add(function (params) {
-            console.log(this);
+        // cb.add(function (params) {
+        // console.log(this);
 
-        })
+        // })
 
-        cb.fire()
+        // cb.fire()
         // cb.fire()
         // console.log(cb);
         // var fn1 = function () {
@@ -106,12 +106,41 @@
 
         // cb.fire()
 
-// function a(params) {
-//     console.log(this == c);
-//     console.log(c)
-// }
+        // function a(params) {
+        //     console.log(this == window.c);
+        //     console.log(window.c)
+        // }
+        // c = new a()
 
-// var c = new a()
+        // console.log([] == false);
+
+        function myNew(fn) {
+            const obj = {}
+            fn.call(obj)
+
+        }
+
+        function Ob(params) {
+            this.age = 2
+            return []
+        }
+
+        console.log(Object.create(Ob.prototype));
+        
+
+        const obj = new Ob()
+
+
+        // console.log(obj instanceof Ob);
+
+        function _new(fn, ...arg) {
+            const obj = Object.create(fn.prototype);
+            const ret = fn.apply(obj, arg);
+            return ret instanceof Object ? ret : obj;
+        }
+
+        console.log(_new(Ob));
+        
 
 
     </script>

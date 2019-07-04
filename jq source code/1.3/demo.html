@@ -12,11 +12,12 @@
 				var der = $.Deferred();     //延迟对象    deferred 
 				var test = function() {
                     console.log("老司机开车了");
-                    setTimeout(() => {
+                    // setTimeout(() => {
 					   der.resolve("max");     //成功     队列中的处理函数  调用成功这个队列中的处理函数
-                    }, 1000);
+                    // }, 1000);
 				}
-				setTimeout(test, 1000);   
+				// setTimeout(test, 1000);   
+				test()
 				return der;    //延迟对象 
 			}
             

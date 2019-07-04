@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="box" style="width: 20px;height: 20px;background: #000;"></div>
+    <script src="jq1.4inital.js"></script>
+    <script>
+        // $('#box').on('click', function () {
+        //     console.log(2);
+        // })
+        var fn = function () {
+            var count = 1;
+            console.log(count);
+        }
+        var uniq = function () {
+            var count = 2;
+            console.log(count)
+        }
+        fn() || uniq();
+    </script>
+</body>
+
+</html>
