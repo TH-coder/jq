@@ -143,26 +143,34 @@
 
 
 
-        const obj = {
-            name: 'joy'
-        };
+        // const obj = {
+        //     name: 'joy'
+        // };
 
-        function getName(a, b) {
-            console.log(this.name, a, b);
+        // function getName(a, b) {
+        //     console.log(this.name, a, b);
+        // }
+
+        // Function.prototype.newCall = function (that, ...arg) {
+        //     if (typeof this !== 'function') {
+        //         throw this + 'is not a function'
+        //     }
+        //     that = that || window; //因为第一个参数如果不传就会绑定到window上面
+        //     that.myFn = this;
+        //     const result = that.myFn(...arg); //解构赋值把参数传进来,先把结果存起来
+        //     delete that.myFn; //再删除,否则就有副作用了
+        //     return result;
+        // };
+
+        // getName.newApply(obj, 1, 2); // joy 1 2
+
+        function fn(params) {
+            var a = {}
+            return a
         }
 
-        Function.prototype.newCall = function (that, ...arg) {
-            if (typeof this !== 'function') {
-                throw this + 'is not a function'
-            }
-            that = that || window; //因为第一个参数如果不传就会绑定到window上面
-            that.myFn = this;
-            const result = that.myFn(...arg); //解构赋值把参数传进来,先把结果存起来
-            delete that.myFn; //再删除,否则就有副作用了
-            return result;
-        };
-
-        getName.newApply(obj, 1, 2); // joy 1 2
+        console.log(fn() === fn());
+        
 
     </script>
 </body>

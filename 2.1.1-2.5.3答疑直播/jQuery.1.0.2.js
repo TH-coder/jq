@@ -163,15 +163,15 @@
 			return [context.createElement(parse[1])];
 		},
 
-		//$.Callbacks用于管理函数队列
+		//$.Callbacks用于管理函数队列   unique
 		callbacks: function(options) {
 			options = typeof options === "string" ? (optionsCache[options] || createOptions(options)) : {};
 			var list = [];
 			var index, length, testting, memory, start, starts;
-			var fire = function(data) {
+			var fire = function(data) { //第二次
 				memory = options.memory && data;
-				index = starts || 0;
-				start = 0;
+				index = starts || 0; //固定 1  index
+				starts = 0;
 				testting = true;
 				length = list.length;
 				for (; index < length; index++) {
@@ -183,14 +183,18 @@
 			var self = {
 				add: function() {
 					var args = Array.prototype.slice.call(arguments);
-					start = list.length;
+					start = list.length; //1
 					args.forEach(function(fn) {
 						if (toString.call(fn) === "[object Function]") {
-							list.push(fn);
+							//检索  unique
+							//!options.unique == false
+							if (!options.unique || !self.has(fn)) {
+								list.push(fn);
+							}
 						}
 					});
 					if (memory) {
-						starts = start;
+						starts = start; //1
 						fire(memory);
 					}
 					return this;
@@ -206,63 +210,88 @@
 				//参数传递
 				fire: function() {
 					self.fireWith(this, arguments);
+				},
+				has: function(fn) { //[].indexOf()
+					//有出现 list.indexOf(fn) > -1 true   没有出现 -1 > -1  false
+					return list.indexOf(fn) > -1;
 				}
 			}
-			return self;
+			return self; //self
 		},
 
 		// 异步回调解决方案
-Deferred: function(func) {
-	var tuples = [
-			["resolve", "done", jQuery.callbacks("once memory"), "resolved"],
-			["reject", "fail", jQuery.callbacks("once memory"), "rejected"],
-			["notify", "progress", jQuery.callbacks("memory")]
-		],
-		state = "pending",
-		promise = {
-			state: function() {
-				return state;
-			},
-			then: function( /* fnDone, fnFail, fnProgress */ ) {
-			},
-			promise: function(obj) {
-				return obj != null ? jQuery.extend(obj, promise) : promise;
-			}
-		},
-		deferred = {};
+		Deferred: function(func) {
+			var tuples = [
+					["resolve", "done", jQuery.callbacks("once memory"), "resolved"],
+					["reject", "fail", jQuery.callbacks("once memory"), "rejected"],
+					["notify", "progress", jQuery.callbacks("memory")]
+				],
+				state = "pending",
+				promise = {
+					state: function() {
+						return state;
+					},
+					then: function( /* fnDone, fnFail, fnProgress */ ) {
+						var funs = [].slice.call(arguments); //多个回调函数
+						//console.log(funs);
+						//newDeferred
+						return jQuery.Deferred(function(newDeferred) {
+							tuples.forEach(function(tuple, i) {
+								var fn = jQuery.isFunction(funs[i]) && funs[i];
+								deferred[tuple[1]](function() {
+									var returnDeferred = fn && fn.apply(this, arguments);
+									if (returnDeferred && jQuery.isFunction(returnDeferred.promise)) {
+										returnDeferred.promise()
+											.done(newDeferred.resolve)
+											.fail(newDeferred.reject)
+											.progress(newDeferred.notify);
+									}
+								});
+							});
+						}).promise();
+					},
+					promise: function(obj) {
+						return obj != null ? jQuery.extend(obj, promise) : promise;
+					}
+				},
+				deferred = {};
 
-	tuples.forEach(function(tuple, i) {
-		var list = tuple[2],
-			stateString = tuple[3];
+			tuples.forEach(function(tuple, i) {
+				var list = tuple[2], //self
+					stateString = tuple[3];
 
-		// promise[ done | fail | progress ] = list.add
-		promise[tuple[1]] = list.add;
+				// promise[ done | fail | progress ] = list.add  self 对象的拷贝   self.fire
+				promise[tuple[1]] = list.add;
 
-		// Handle state
-		if (stateString) {
-			list.add(function() {
-				// state = [ resolved | rejected ]
-				state = stateString;
+				// Handle state
+				if (stateString) {
+					list.add(function() {
+						// state = [ resolved | rejected ]
+						state = stateString;
+					});
+				}
+
+				// deferred[ resolve | reject | notify ]
+				deferred[tuple[0]] = function() {
+					deferred[tuple[0] + "With"](this === deferred ? promise : this, arguments);
+					return this;
+				};
+				deferred[tuple[0] + "With"] = list.fireWith;
 			});
-		}
 
-		// deferred[ resolve | reject | notify ]
-		deferred[tuple[0]] = function() {
-			deferred[tuple[0] + "With"](this === deferred ? promise : this, arguments);
-			return this;
-		};
-		deferred[tuple[0] + "With"] = list.fireWith;
-	});
+			// Make the deferred a promise
+			promise.promise(deferred);
 
-	// Make the deferred a promise
-	promise.promise(deferred);
-
-	return deferred;
-},
-//执行一个或多个对象的延迟对象的回调函数
-when: function(subordinate) {
-	return subordinate.promise();
-},
+			if (func) {
+				//newdeferred
+				func.call(deferred, deferred);
+			}
+			return deferred;
+		},
+		//执行一个或多个对象的延迟对象的回调函数
+		when: function(subordinate) {
+			return subordinate.promise();
+		},
 
 	});
 
