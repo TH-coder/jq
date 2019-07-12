@@ -72,6 +72,7 @@
 		},
 		//....
 	}
+	
 
 	jQuery.fn.init.prototype = jQuery.fn;
 

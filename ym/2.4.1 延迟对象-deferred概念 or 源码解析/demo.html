@@ -20,6 +20,7 @@
 			//延迟对象的状态 决定调用那个队列中的处理函数
 			$.when(wait())     //promise对象promise.done()   self.add
 				.done(function(name) {
+					
 					console.log(name)
 					console.log("执行成功");
 				})
