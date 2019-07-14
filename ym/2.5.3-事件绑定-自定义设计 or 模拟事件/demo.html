@@ -25,11 +25,15 @@
 
 
 		//执行浏览器默认事件  相当于执行了原生onfocus事件(怎么做到的)？
-		// 			$('input').on('focus',function(){
-		// 				console.log("loading...");
-		// 			});
-		// 
-		//   			$('input').trigger('focus');
+					$('input').on('focus',function(){
+						console.log("loading...");
+					});
+		
+					  // $('input')[0].focus()
+					//   console.log( $('input'));
+					  
+					  $('input').trigger('focus');
+					  $('input')[0].focus()
 		// function myNew(fn, ...args) {
 		// 	const obj = Object.create(fn.prototype)
 		// 	const ret = fn.apply(obj)

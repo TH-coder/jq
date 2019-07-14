@@ -403,7 +403,7 @@
 			console.log(handlers)
 			event.delegateTarget = this;
 			//执行事件处理函数
-		   jQuery.event.handlers.call( this, event, handlers );
+		    jQuery.event.handlers.call( this, event, handlers );
 		},
 		
 		//执行事件处理函数

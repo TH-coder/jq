@@ -478,6 +478,8 @@
 				trigger: function() {
 					if (this !== safeActiveElement() && this.focus) {
 						//console.log( this.focus)
+						console.log($(this));
+						
 						this.focus();
 						return false;
 					}
